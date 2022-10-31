@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,16 +18,13 @@ Route::get('/', function () {
     return view('auth/login');
 });
 
-Route::post('/post', [\App\Http\Controllers\HomeController::class, 'insertInDB']);
+Route::post('/home', [\App\Http\Controllers\HomeController::class, 'insertInDB']);
 
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Auth::routes();
+Route::get('/home/{username}', [Controllers\ProfileController::class, 'getProfile'])->name('profile.index');
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::post('/home/{username}', [Controllers\ProfileController::class, 'postComment']);
 
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PostRequest;
 use App\Models\Comment;
+use App\Models\UserList;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -18,30 +19,15 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
 
-    public function insertInDB(PostRequest $req){
-        $text = $req->test;
-//        return Comment::create([
-//                'author_id' => '11',
-//                'parent_id' => '1',
-//                'comment' => 'But, is this working?',
-//            ]);
-        return "hello";
-
-
+    public function getUsersFromDB(){
+        return redirect('/home');
     }
 
     public function index()
     {
         //$users = \App\Models\Comment::all();
-
-        $comm =new Comment();
-        $comments = $comm->getComment();
-        return view('home',compact('comments'));
+        $users = (new \App\Models\UserList)->getUserList();
+        return view('home', compact('users'));
     }
 }

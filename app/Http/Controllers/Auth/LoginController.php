@@ -27,6 +27,9 @@ class LoginController extends Controller
      * @var string
      */
     protected $redirectTo = RouteServiceProvider::HOME;
+//    protected function redirectTo(){
+//        return redirect()->route('profile.index', ['username' => 1]);
+//    }
 
     /**
      * Create a new controller instance.
