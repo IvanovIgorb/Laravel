@@ -18,8 +18,6 @@ Route::get('/', function () {
     return view('auth/login');
 });
 
-Route::post('/home', [\App\Http\Controllers\HomeController::class, 'insertInDB']);
-
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -27,4 +25,5 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/home/{username}', [Controllers\ProfileController::class, 'getProfile'])->name('profile.index');
 
 Route::post('/home/{username}', [Controllers\ProfileController::class, 'postComment']);
+
 

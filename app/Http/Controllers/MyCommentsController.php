@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\PostComment;
 use App\Models\Comment;
 use http\Client\Curl\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -12,33 +11,18 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
 
-class ProfileController extends Controller
+class MyCommentsController extends Controller
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     public function postComment(Request $request){
 
+        $text = $request->input('text');
+        $title = $request->input('title');
+        $author = $request->input('authorId');
         $id = $request->input('userId');
-        if ($request->has('send')) {
 
-            $text = $request->input('text');
-            $title = $request->input('title');
-            $author = $request->input('authorId');
-
-            if ($request->has('parent')){
-                $parent = $request->input('parent');
-            }
-            else{
-                $parent = "0";
-            }
-
-            (new \App\Models\Comment)->insertInDb($author,$id,$title,$text,$parent);
-        } else
-            if ($request->has('delete')) {
-            $commentId = $request->input('commId');
-            (new \App\Models\Comment)->deleteFromDB($commentId);
-        }
-        //return 'no action found';
+        (new \App\Models\Comment)->insertInDb($author,$id,$title,$text);
 
         return redirect()->route('profile.index', ['username' => $id]);
     }

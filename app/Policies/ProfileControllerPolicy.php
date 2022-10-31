@@ -21,7 +21,7 @@ class ProfileControllerPolicy
         //
     }
 
-    public function viewProtectedPart(User $user){
+    public function viewProtectedPart(){
         if(Auth::check()){
             return Response::allow('Вам разрешено');
         }

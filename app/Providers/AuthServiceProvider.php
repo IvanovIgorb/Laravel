@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -24,6 +25,13 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+
+        Gate::define('delete-permission', function (User $user, $userId, $authorId){
+            if($user){
+                return ($user->id == $userId || $user->id == $authorId);
+            }
+            return false;
+        });
 
         //
     }
