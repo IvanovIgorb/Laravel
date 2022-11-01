@@ -35,11 +35,14 @@
                                             <div class="col-4">
                                                 <div class="media-body">
                                                     @if($comm->parent_id != "0")
-                                                        <div class="parentText"><q>{{$comm->parent_id}}</q></div>
+                                                        @if($comm->parent_text == "")
+                                                            <div class="parentText"><q> Комментарий удален</q></div>
+                                                        @else
+                                                            <div class="parentText"><q>{{$comm->parent_text}}</q></div>
+                                                        @endif
                                                     @endif
                                                     <div class="media-heading">
                                                         <div class="author">{{$comm->name}}</div>
-                                                        <div class="author">{{$comm->author_id}}</div>
                                                         <div class="media-text text-justify">{{$comm->title}}</div>
                                                     </div>
                                                     <div class="media-text text-justify"> {{$comm->text}} </div>
@@ -61,7 +64,7 @@
                                                                                                 required></textarea></div>
                                                                     <input name="authorId" type="hidden" value="{{ Auth::user()->id }}">
                                                                     <input name="userId" type="hidden" value="{{ $user->id }}">
-                                                                    <input name="parent" type="hidden" value="{{ $comm->text }}">
+                                                                    <input name="parent" type="hidden" value="{{ $comm->id }}">
 
                                                                     <div class="mb-3">
                                                                         <input type="submit" name="send" value="Ответить">
@@ -90,7 +93,9 @@
                                     </li>
                                 @endforeach
                             </ul>
-
+                        <div id="fun">
+                            <button id="example-1">Click to update</button>
+                        </div>
                         </div>
                         <!--@if (session('status'))
                             <div class="alert alert-success" role="alert">
@@ -102,6 +107,23 @@
                 </div>
             </div>
         </div>
-    </div>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                // вешаем на клик по элементу с id = example-1
+                $('#example-1').click(function(){
+                    $.ajax({
+                        type: "GET",
+                        url: '{{ route('profile.index', ['username' => Auth::user()->id]) }}',
+                        datatype: "json",
+                        success: function (response){
+                            console.log(response.comments);
+                        }
+                    });
+                    // загрузку HTML кода из файла example.html
+                })
+            });
+        </script>
+
+
 
 @endsection

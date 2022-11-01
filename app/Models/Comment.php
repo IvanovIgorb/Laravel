@@ -11,17 +11,6 @@ class Comment extends Model
     use HasFactory;
     protected $guarded = false;
 
-    public function getComment($id): \Illuminate\Support\Collection
-    {
-        $data = DB::table('comments')
-            ->join('users', 'users.id', '=', 'comments.author_id')
-            ->select('comments.*', 'users.name')
-            ->where('host_user_id',$id)
-            ->take(5)
-            ->get();
-        return $data;
-    }
-
     public function insertInDB($author, $id, $title, $text,$parent){
         Comment::create([
             'author_id' => $author,

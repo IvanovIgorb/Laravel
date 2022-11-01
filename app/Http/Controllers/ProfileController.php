@@ -31,12 +31,17 @@ class ProfileController extends Controller
             else{
                 $parent = "0";
             }
-
-            (new \App\Models\Comment)->insertInDb($author,$id,$title,$text,$parent);
+            Comment::create([
+                'author_id' => $author,
+                'host_user_id' => $id,
+                'parent_id' => $parent,
+                'title' => $title,
+                'text' => $text,
+            ]);
         } else
             if ($request->has('delete')) {
             $commentId = $request->input('commId');
-            (new \App\Models\Comment)->deleteFromDB($commentId);
+            Comment::where('id', '=', $commentId)->delete();
         }
         //return 'no action found';
 
@@ -45,9 +50,37 @@ class ProfileController extends Controller
 
     public function getProfile($username){
         $user = \App\Models\User::where('id',$username)->first();
-        $comm =new Comment();
-        $comments = $comm->getComment($username);
+        $comments = Comment::join('users', 'users.id', '=', 'comments.author_id')
+            ->leftJoin('comments AS c2', 'comments.parent_id', '=', 'c2.id')
+            ->select('comments.*', 'users.name', 'c2.text as parent_text')
+            ->where('comments.host_user_id',$username)
+            ->take(5)
+            ->get();
+//        $comm =new Comment();
+//        $comments = $comm->getComment($username);
         return view('profile.index', compact('user','comments'));
+    }
+
+    public function getMoreComments($username){
+        //$user = \App\Models\User::where('id',$username)->first();
+        $allComments = Comment::all();
+
+        $comments = Comment::join('users', 'users.id', '=', 'comments.author_id')
+            ->leftJoin('comments AS c2', 'comments.parent_id', '=', 'c2.id')
+            ->select('comments.*', 'users.name', 'c2.text as parent_text')
+            ->where('comments.host_user_id',$username)
+            ->skip(5)
+            ->take(5)
+            ->get();
+
+
+        //print_r($comments);
+
+        //$comments = Comment::all();
+        return response()->json([
+            //'user'=>$user,
+            'comments'=>$comments,
+        ]);
     }
 
 }

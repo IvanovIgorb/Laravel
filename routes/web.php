@@ -24,6 +24,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::get('/home/{username}', [Controllers\ProfileController::class, 'getProfile'])->name('profile.index');
 
+Route::get('/fetch-comments/{username}', [Controllers\ProfileController::class, 'getMoreComments'])->name('fetch');
+
 Route::post('/home/{username}', [Controllers\ProfileController::class, 'postComment']);
 
 
