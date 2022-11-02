@@ -26,12 +26,12 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Gate::define('delete-permission', function (User $user, $userId, $authorId){
-            if($user){
-                return ($user->id == $userId || $user->id == $authorId);
-            }
-            return false;
-        });
+//        Gate::define('delete-permission', function (User $user, $userId, $authorId){
+//            if($user){
+//                return ($user->id == $userId || $user->id == $authorId);
+//            }
+//            return false;
+//        });
 
         //
     }

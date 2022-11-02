@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Jobs\PostComment;
 use App\Models\Comment;
-use http\Client\Curl\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
@@ -49,36 +49,50 @@ class ProfileController extends Controller
     }
 
     public function getProfile($username){
-        $user = \App\Models\User::where('id',$username)->first();
+        $user = User::where('id',$username)->first();
         $comments = Comment::join('users', 'users.id', '=', 'comments.author_id')
             ->leftJoin('comments AS c2', 'comments.parent_id', '=', 'c2.id')
             ->select('comments.*', 'users.name', 'c2.text as parent_text')
             ->where('comments.host_user_id',$username)
-            ->take(5)
             ->get();
-//        $comm =new Comment();
-//        $comments = $comm->getComment($username);
-        return view('profile.index', compact('user','comments'));
+        $count = count($comments);
+        $comments = $comments->take(5);
+        foreach ($comments as $comm){
+            if ($user->id == Auth::user()->id || Auth::user()->id == $comm->author_id){
+                $comm['permission'] = '1';
+            }else{
+                $comm['permission'] = '0';
+            };
+        }
+        return view('profile.index', compact('user','comments', 'count'));
     }
 
     public function getMoreComments($username){
-        //$user = \App\Models\User::where('id',$username)->first();
-        $allComments = Comment::all();
+        $user = User::where('id',$username)->first();
+        //$allComments = Comment::all();
 
         $comments = Comment::join('users', 'users.id', '=', 'comments.author_id')
             ->leftJoin('comments AS c2', 'comments.parent_id', '=', 'c2.id')
             ->select('comments.*', 'users.name', 'c2.text as parent_text')
             ->where('comments.host_user_id',$username)
-            ->skip(5)
-            ->take(5)
+            //->skip(5)
+            //->take(5)
             ->get();
+        $commcount = count($comments) - 5;
 
-
-        //print_r($comments);
+        $comments = $comments->skip(5)
+            ->take($commcount);
+        foreach ($comments as $comm) {
+            if ($user->id == Auth::user()->id || Auth::user()->id == $comm->author_id) {
+                $comm['permission'] = '1';
+            } else {
+                $comm['permission'] = '0';
+            };
+        }
 
         //$comments = Comment::all();
         return response()->json([
-            //'user'=>$user,
+            'user'=>$user,
             'comments'=>$comments,
         ]);
     }
