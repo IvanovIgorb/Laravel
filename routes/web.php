@@ -22,10 +22,20 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/home/{username}', [Controllers\ProfileController::class, 'getProfile'])->name('profile.index');
+Route::get('/home/{userId}', [Controllers\CommentController::class, 'index'])->name('profile.index');
 
-Route::get('/fetch-comments/{username}', [Controllers\ProfileController::class, 'getMoreComments'])->name('fetch-comm');
+Route::get('/fetch-comments/{userId}', [Controllers\CommentController::class, 'getMoreComments'])->name('fetch-comm');
 
-Route::post('/home/{username}', [Controllers\ProfileController::class, 'postComment']);
+Route::get('home/{userId}/lib', [Controllers\BookController::class, 'index'])->name('profile.library');
+
+Route::get('home/{userId}/read/{bookname}', [Controllers\BookController::class, 'show'])->name('profile.readbook');
+
+Route::get('home/{userId}/edit/{bookname}', [Controllers\BookController::class, 'edit'])->name('profile.editbook');
+
+Route::post('home/{userId}/edit/{bookname}', [Controllers\BookController::class, 'update']);
+
+Route::post('/home/{userId}', [Controllers\CommentController::class, 'store']);
+
+Route::delete('/home/{userId}', [Controllers\CommentController::class, 'destroy']);
 
 

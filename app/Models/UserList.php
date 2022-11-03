@@ -11,9 +11,4 @@ class UserList extends Model
     use HasFactory;
     protected $guarded = false;
 
-    public function getUserList()
-    {
-        $data = DB::table('users')->get();
-        return $data;
-    }
 }

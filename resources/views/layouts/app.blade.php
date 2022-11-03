@@ -21,6 +21,12 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <style>
+        .text{
+            width: 400px;
+            height: 400px;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -31,13 +37,19 @@
                 </a>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
-                        <li class="nav-item">
-                            @if(Auth::user())
-                            <a class="nav-link active" href="{{ route('profile.index', ['username' => Auth::user()->id]) }}">
-                                Моя стена
-                            </a>
-                            @endif
-                        </li>
+                        @if(Auth::user())
+                            <li class="nav-item">
+                                    <a class="nav-link active" href="{{ route('profile.index', ['userId' => Auth::user()->id]) }}">
+                                        Моя стена
+                                    </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{{ route('profile.library', ['userId' => Auth::user()->id]) }}">
+                                    Моя библиотека
+                                </a>
+
+                            </li>
+                        @endif
                     </ul>
                 </div>
 

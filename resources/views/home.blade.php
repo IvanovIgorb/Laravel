@@ -16,7 +16,7 @@
                                     <li class="media">
                                         <div class="media-body">
                                             <div>
-                                                <a href="{{route('profile.index', ['username' => $user->id])}}">
+                                                <a href="{{route('profile.index', ['userId' => $user->id])}}">
                                                     {{$user->name}}
                                                 </a>  </div>
                                             <hr>

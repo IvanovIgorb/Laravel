@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PostRequest;
 use App\Models\Comment;
+use App\Models\User;
 use App\Models\UserList;
 use Illuminate\Http\Request;
 
@@ -19,15 +20,9 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
-
-    public function getUsersFromDB(){
-        return redirect('/home');
-    }
-
     public function index()
     {
-        //$users = \App\Models\Comment::all();
-        $users = (new \App\Models\UserList)->getUserList();
+        $users = User::all();
         return view('home', compact('users'));
     }
 }

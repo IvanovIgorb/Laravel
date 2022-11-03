@@ -1,4 +1,4 @@
-@php use App\Http\Controllers\ProfileController; @endphp
+@php use App\Http\Controllers\CommentController; @endphp
 @extends('layouts.app')
 
 @section('content')
@@ -11,33 +11,33 @@
 
                     <div class="card-body">
                         <div class="row">
-                            @can('view-protected-part',ProfileController::class)
+                            @can('view-protected-part',CommentController::class)
                                 <form action="" method="post">
                                     @csrf
                                     <div class="row justify-content-center">
                                         <div class="col-md-8">
                                             <div class="mb-3">
-                                                <input name="title" type="text" placeholder="Заголовок сообщения"
-                                                       required>
-
+                                                <input name="title" type="text"  placeholder="Заголовок сообщения" required>
                                             </div>
-                                            <div class="mb-3"><textarea name="text" id="comments"
-                                                                        placeholder="Оставьте сообщение!"
-                                                                        required></textarea></div>
+                                            <div class="mb-3"><textarea name="text" id="comments" placeholder="Оставьте сообщение!"
+                                                                        required></textarea>
+                                            </div>
                                             <input name="authorId" type="hidden" value="{{ Auth::user()->id }}">
                                             <input name="userId" type="hidden" value="{{ $user->id }}">
-                                            <div class="mb-3"><input type="submit" name="send" value="Отправить"></div>
+                                            <div class="mb-3">
+                                                <input type="submit" name="send" value="Ответить">
+                                            </div>
                                         </div>
                                     </div>
                                 </form>
                             @endcan
                             <ul class="media-list" id="commlist">
-                                @foreach ($comments as $comm)
-                                    @if($comm->parent_id != "0")
-                                        @if($comm->parent_text == "")
+                                @foreach ($comments as $comment)
+                                    @if($comment->parent_id != "0")
+                                        @if($comment->parent_text == "")
                                             <div class="parentText"><q> Комментарий удален</q></div>
                                         @else
-                                            <div class="parentText"><q>{{$comm->parent_text}}</q></div>
+                                            <div class="parentText"><q>{{$comment->parent_text}}</q></div>
                                         @endif
                                     @endif
                                     <li class="media">
@@ -45,53 +45,38 @@
                                             <div class="col-4">
                                                 <div class="media-body">
                                                     <div class="media-heading">
-                                                        <div class="author">{{$comm->name}}</div>
-                                                        <div class="media-text text-justify">{{$comm->title}}</div>
+                                                        <div class="author">{{$comment->name}}</div>
+                                                        <div class="media-text text-justify">{{$comment->title}}</div>
                                                     </div>
-                                                    <div class="media-text text-justify"> {{$comm->text}} </div>
-
-                                                    @can('view-protected-part',ProfileController::class)
-                                                        <div class="footer-comment" id="{{$comm->i}}">
-
+                                                    <div class="media-text text-justify"> {{$comment->text}} </div>
+                                                    @can('view-protected-part',CommentController::class)
+                                                        <div class="footer-comment">
                                                             <form action="" method="post">
                                                                 @csrf
                                                                 <div class="col-md-8">
                                                                     <div class="mb-3">
-                                                                        <input name="title" type="text"
-                                                                               placeholder="Заголовок сообщения"
-                                                                               required>
+                                                                        <input name="title" type="text"  placeholder="Заголовок сообщения" required>
                                                                     </div>
-                                                                    <div class="mb-3"><textarea name="text"
-                                                                                                id="comments"
-                                                                                                placeholder="Оставьте сообщение!"
+                                                                    <div class="mb-3"><textarea name="text" id="comments" placeholder="Оставьте сообщение!"
                                                                                                 required></textarea>
                                                                     </div>
-                                                                    <input name="authorId" type="hidden"
-                                                                           value="{{ Auth::user()->id }}">
-                                                                    <input name="userId" type="hidden"
-                                                                           value="{{ $user->id }}">
-                                                                    <input name="parent" type="hidden"
-                                                                           value="{{ $comm->id }}">
+                                                                    <input name="authorId" type="hidden" value="{{ Auth::user()->id }}">
+                                                                    <input name="userId" type="hidden" value="{{ $user->id }}">
+                                                                    <input name="parent" type="hidden" value="{{ $comment->id }}">
                                                                     <div class="mb-3">
-
-                                                                        <input type="submit" name="send"
-                                                                               value="Ответить">
+                                                                        <input type="submit" name="send" value="Ответить">
                                                                     </div>
                                                                 </div>
                                                             </form>
-                                                            @can('delete-permission', [$user->id, $comm->author_id])
-                                                                @if($comm->permission == '1')
-                                                                    <form action="" method="post">
-                                                                        @csrf
-                                                                        <input name="userId" type="hidden"
-                                                                               value="{{ $user->id }}">
-                                                                        <input name="commId" type="hidden"
-                                                                               value="{{ $comm->id }}">
-                                                                        <input type="submit" name="delete"
-                                                                               value="Удалить">
-                                                                    </form>
-                                                                @endif
-                                                            @endcan
+                                                            @if($comment->permission == '1')
+                                                                <form action="" method="post">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <input name="userId" type="hidden" value="{{$user->id}}">
+                                                                    <input name="commId" type="hidden" value="{{ $comment->id }}">
+                                                                    <input type="submit" name="delete" value="Удалить">
+                                                                </form>
+                                                            @endif
                                                             @endcan
                                                         </div>
                                                         <hr>
@@ -105,11 +90,11 @@
                                     </li>
                                 @endforeach
                             </ul>
-                                @if($count > 5)
-                            <div id="fun">
-                                <button id="example-1">Click to update</button>
-                            </div>
-                                @endif
+                            @if($count > 5)
+                                <div id="fun">
+                                    <button id="example-1">Click to update</button>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -122,7 +107,7 @@
                     $.ajax({
                         type: "GET",
                         // url: '/fetch-comments',
-                        url: '{{ route('fetch-comm', ['username' => $user->id]) }}',
+                        url: '{{ route('fetch-comm', ['userId' => $user->id]) }}',
                         datatype: "json",
                         success: function (response) {
                             console.log(response.comments);
@@ -148,7 +133,7 @@
                                                     </div>\
                                                     <div class="media-text text-justify"> ' + item.text + ' </div>\
                                                     <div class="footer-comment">\
-                                                        @can('view-protected-part',ProfileController::class)\
+                                                        @can('view-protected-part',CommentController::class)\
                                                         <form action="" method="post">\
                                                         @csrf\
                                                         <div class="col-md-8">\
@@ -169,6 +154,7 @@
                                     $("#commlist").append(
                                         '<form action="" method="post">\
                                             @csrf\
+                                            @method('DELETE')\
                                             <input name="userId" type="hidden" value="' + response.user.id + '">\
                                                 <input name="commId" type="hidden" value="' + item.id + '">\
                                                     <input type="submit" name="delete" value="Удалить">\
