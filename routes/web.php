@@ -24,18 +24,32 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::get('/home/{userId}', [Controllers\CommentController::class, 'index'])->name('profile.index');
 
-Route::get('/fetch-comments/{userId}', [Controllers\CommentController::class, 'getMoreComments'])->name('fetch-comm');
-
-Route::get('home/{userId}/lib', [Controllers\BookController::class, 'index'])->name('profile.library');
-
-Route::get('home/{userId}/read/{bookname}', [Controllers\BookController::class, 'show'])->name('profile.readbook');
-
-Route::get('home/{userId}/edit/{bookname}', [Controllers\BookController::class, 'edit'])->name('profile.editbook');
-
-Route::post('home/{userId}/edit/{bookname}', [Controllers\BookController::class, 'update']);
-
 Route::post('/home/{userId}', [Controllers\CommentController::class, 'store']);
 
 Route::delete('/home/{userId}', [Controllers\CommentController::class, 'destroy']);
+
+Route::get('/fetch-comments/{userId}', [Controllers\CommentController::class, 'getMoreComments'])->name('fetch-comm');
+
+Route::get('home/{userId}/lib', [Controllers\BookController::class, 'index'])->middleware('library.access')->name('profile.library');
+
+Route::get('home/{userId}/lib/create', [Controllers\BookController::class, 'create'])->name('profile.createBook');
+
+Route::post('home/{userId}/lib/create', [Controllers\BookController::class, 'store'])->name('profile.createBook');
+
+Route::get('home/{userId}/lib/{bookId}', [Controllers\BookController::class, 'show'])->middleware('book.access')->name('profile.readBook');
+
+Route::get('home/{userId}/lib/edit/{bookId}', [Controllers\BookController::class, 'edit'])->name('profile.editBook');
+
+Route::post('home/{userId}/lib/edit/{bookId}', [Controllers\BookController::class, 'update']);
+
+Route::delete('home/{userId}/lib', [Controllers\BookController::class, 'destroy']);
+
+Route::put('home/{userId}/lib', [Controllers\BookController::class, 'update']);
+
+Route::post('home/lib/access', [Controllers\AccessController::class, 'store'])->name('create.access');
+
+Route::delete('home/lib/access', [Controllers\AccessController::class, 'destroy'])->name('destroy.access');
+
+
 
 

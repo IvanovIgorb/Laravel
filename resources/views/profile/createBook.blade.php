@@ -6,7 +6,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header"> Изменение книги <b>{{$book->name}}</b></div>
+                    <div class="card-header"> Создание книги</div>
                     <div class="card-body">
                         <div class="row">
                             <ul class="media-list">
@@ -16,14 +16,13 @@
                                                 @csrf
                                                 <div class="container">
                                                     <div class="row">
-                                                        <input type="hidden" name="id" value="{{$book->id}}">
-                                                        <div class="col-3"> <input name="name" value="{{$book->name}}"> </div>
+                                                        <div class="col-3"> <input name="name" placeholder="Название" required> </div>
                                                     </div>
                                                     <div class="row">
-                                                        <div class="col-12"> <textarea name="text" class="text">{{$book->text}}</textarea> </div>
+                                                        <div class="col-12"> <textarea name="text" class="text" placeholder="Текст книги" required></textarea> </div>
                                                     </div>
                                                     <div class="row">
-                                                        <div class="col"> <input type="submit" value="Изменить"></div>
+                                                        <div class="col"> <input type="submit" value="Добавить"></div>
                                                     </div>
                                                 </div>
                                             </form>

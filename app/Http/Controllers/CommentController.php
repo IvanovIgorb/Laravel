@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\PostComment;
+use App\Models\Access;
 use App\Models\Comment;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -19,35 +20,38 @@ class CommentController extends Controller
     public function store(Request $request){
 
         $id = $request->input('userId');
+        $text = $request->input('text');
+        $title = $request->input('title');
+        $author = $request->input('authorId');
 
+        if ($request->has('parent')){
+            $parent = $request->input('parent');
+        }
+        else{
+            $parent = "0";
+        }
 
-            $text = $request->input('text');
-            $title = $request->input('title');
-            $author = $request->input('authorId');
-
-            if ($request->has('parent')){
-                $parent = $request->input('parent');
-            }
-            else{
-                $parent = "0";
-            }
-
-            if($author == Auth::id()){
-                Comment::create([
-                    'author_id' => $author,
-                    'host_user_id' => $id,
-                    'parent_id' => $parent,
-                    'title' => $title,
-                    'text' => $text,
-                ]);
-            }
-
-        //return 'no action found';
+        if($author == Auth::id()){
+            Comment::create([
+                'author_id' => $author,
+                'host_user_id' => $id,
+                'parent_id' => $parent,
+                'title' => $title,
+                'text' => $text,
+            ]);
+        }
 
         return redirect()->route('profile.index', ['userId' => $id]);
     }
 
     public function index($userId){
+        $access = Access::where('user_id',$userId)->where('host_id', Auth::id())->first();
+        if (isset($access)){
+            $access = 1;
+        }
+        else{
+            $access = 0;
+        }
         $user = User::where('id',$userId)->first();
         $comments = Comment::join('users', 'users.id', '=', 'comments.author_id')
             ->leftJoin('comments AS c2', 'comments.parent_id', '=', 'c2.id')
@@ -56,14 +60,16 @@ class CommentController extends Controller
             ->get();
         $count = count($comments);
         $comments = $comments->take(5);
-        foreach ($comments as $comment){
-            if ($user->id == Auth::user()->id || Auth::user()->id == $comment->author_id){
-                $comment['permission'] = '1';
-            }else{
-                $comment['permission'] = '0';
-            };
+        if (Auth::check()){
+            foreach ($comments as $comment){
+                if ($user->id == Auth::user()->id || Auth::user()->id == $comment->author_id){
+                    $comment['permission'] = '1';
+                }else{
+                    $comment['permission'] = '0';
+                };
+            }
         }
-        return view('profile.index', compact('user','comments', 'count'));
+        return view('profile.index', compact('user','comments', 'count', 'access'));
     }
 
     public function getMoreComments($userId){
@@ -105,8 +111,9 @@ class CommentController extends Controller
     {
         $userId = $request->input('userId');
         $commentId = $request->input('commId');
-        Comment::where('id', $commentId)->delete();
-
+        $comment = Comment::where('id', $commentId)->first();
+        if($userId == Auth::user()->id || Auth::user()->id == $comment->author_id)
+            $comment->delete();
         return redirect()->route('profile.index', ['userId' => $userId]);
     }
 }

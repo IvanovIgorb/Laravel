@@ -7,7 +7,33 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header"> Добро пожаловать на стену {{ $user->name }}</div>
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-7">Добро пожаловать на стену {{ $user->name }}</div>
+                            @if($user->id != Auth::id())
+                                @if($access == 0)
+                                    <div class="col-3">
+                                        <form action="{{route('create.access')}}" method="post">
+                                            @csrf
+                                            <input type="hidden" name="id" value="{{$user->id}}">
+                                            <input type="submit" name="accessUpdateToY" value="Поделиться библиотекой">
+                                        </form>
+                                    </div>
+                                @else
+                                    <div class="col-3">
+                                        <form action="{{route('destroy.access')}}" method="post">
+                                            @csrf
+                                            @method('DELETE')
+                                            <input type="hidden" name="id" value="{{$user->id}}">
+                                            <input type="submit" name="accessUpdateToN" value="Отключить от библиотеки">
+                                        </form>
+                                    </div>
+                                @endif
+                            @endif
+                        </div>
+
+
+                    </div>
 
                     <div class="card-body">
                         <div class="row">
@@ -30,6 +56,7 @@
                                         </div>
                                     </div>
                                 </form>
+                                <hr>
                             @endcan
                             <ul class="media-list" id="commlist">
                                 @foreach ($comments as $comment)
@@ -49,8 +76,8 @@
                                                         <div class="media-text text-justify">{{$comment->title}}</div>
                                                     </div>
                                                     <div class="media-text text-justify"> {{$comment->text}} </div>
-                                                    @can('view-protected-part',CommentController::class)
-                                                        <div class="footer-comment">
+                                                    <div class="footer-comment">
+                                                        @can('view-protected-part',CommentController::class)
                                                             <form action="" method="post">
                                                                 @csrf
                                                                 <div class="col-md-8">
@@ -160,15 +187,15 @@
                                                     <input type="submit" name="delete" value="Удалить">\
                                         </form>\
                                     @endcan\
-                                </div>\
-                                    <hr>\
                                     </div>\
-                                </div>\
-                                    <div class="col-3">\
-                                        <div ></div>\
+                                        <hr>\
+                                        </div>\
                                     </div>\
-                                </div>\
-                                </li>'
+                                        <div class="col-3">\
+                                            <div ></div>\
+                                        </div>\
+                                    </div>\
+                                    </li>'
                                     );
                                 }
                             });
