@@ -80,7 +80,7 @@ class BookController extends Controller
      */
     public function edit($userId, $bookId)
     {
-        $book = Book::where('author_id', $userId)->where('name',$bookId)->first();
+        $book = Book::where('author_id', $userId)->where('id',$bookId)->first();
 
         if (isset($book)){
             return view('profile.editBook', compact('book'));
@@ -128,7 +128,7 @@ class BookController extends Controller
             $text = $request->input('text');
             if (Auth::id() == $userId)
                 Book::where('id', $id)->where('author_id',$userId)->update(['name' => $name, 'text' => $text]);
-            return redirect()->route('profile.editBook', ['userId' => $userId, 'bookId' => $name]);
+            return redirect()->route('profile.editBook', ['userId' => $userId, 'bookId' => $id]);
         }
 
     }

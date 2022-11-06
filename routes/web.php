@@ -38,9 +38,9 @@ Route::post('home/{userId}/lib/create', [Controllers\BookController::class, 'sto
 
 Route::get('home/{userId}/lib/{bookId}', [Controllers\BookController::class, 'show'])->middleware('book.access')->name('profile.readBook');
 
-Route::get('home/{userId}/lib/edit/{bookId}', [Controllers\BookController::class, 'edit'])->name('profile.editBook');
+Route::get('home/{userId}/lib/edit/{bookId}', [Controllers\BookController::class, 'edit'])->middleware('bookFunctions.access')->name('profile.editBook');
 
-Route::post('home/{userId}/lib/edit/{bookId}', [Controllers\BookController::class, 'update']);
+Route::post('home/{userId}/lib/edit/{bookId}', [Controllers\BookController::class, 'update'])->middleware('bookFunctions.access');
 
 Route::delete('home/{userId}/lib', [Controllers\BookController::class, 'destroy']);
 
