@@ -144,7 +144,7 @@ class BookController extends Controller
         $authorId = Auth::id();
         $bookId = $request->input('id');
         $book = Book::where('id', $bookId)->where('author_id', $authorId)->first();
-        if($authorId == $book->id)
+        if($authorId == $book->author_id)
             $book->delete();
         return redirect()->route('profile.library', ['userId' => $authorId]);
     }
