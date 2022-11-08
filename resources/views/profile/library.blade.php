@@ -27,16 +27,6 @@
                                             <div class="container">
                                                 <div class="row">
                                                     <div class="col-3"> {{$book->name}} </div>
-
-{{--                                                    <div class="col-2" align="center">--}}
-{{--                                                        <form action="{{route('profile.readBook', ['userId' => $user->id, 'bookName' => $book->name])}}" method="post">--}}
-{{--                                                            @csrf--}}
-{{--                                                            <input type="hidden" name="bookId" value="{{$book->id}}">--}}
-{{--                                                            <input type="hidden" name="userId" value="{{$user->id}}">--}}
-{{--                                                            <button class="btn btn-primary" type="submit">Читать</button>--}}
-{{--                                                        </form>--}}
-{{--                                                    </div>--}}
-
                                                     <div class="col-2" align="center"> <button class="btn btn-primary"
                                                                                                onClick='location.href="{{
     route('profile.readBook', ['userId' => $user->id, 'bookId' => $book->id])

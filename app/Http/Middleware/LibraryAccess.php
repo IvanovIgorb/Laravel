@@ -22,10 +22,10 @@ class LibraryAccess
         $hostId = $request->route('userId');
         $userId = Auth::id();
         $access = Access::where('host_id', $hostId)->where('user_id', $userId)->first();
-        if(isset($access) || $userId == $hostId){
+        if (isset($access) || $userId == $hostId) {
             return $next($request);
+        } else {
+            abort(403);
         }
-        else
-        abort(403);
     }
 }

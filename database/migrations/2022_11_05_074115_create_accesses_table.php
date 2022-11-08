@@ -13,12 +13,14 @@ class CreateAccessesTable extends Migration
      */
     public function up()
     {
-        Schema::create('accesses', function (Blueprint $table) {
-            $table->id();
-            $table->integer('host_id');
-            $table->integer('user_id');
-            $table->timestamps();
-        });
+        Schema::create(
+            'accesses', function (Blueprint $table) {
+                $table->id();
+                $table->integer('host_id');
+                $table->integer('user_id');
+                $table->timestamps();
+            }
+        );
     }
 
     /**

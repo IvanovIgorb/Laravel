@@ -21,8 +21,9 @@ class CommentControllerPolicy
         //
     }
 
-    public function viewProtectedPart(){
-        if(Auth::check()){
+    public function viewProtectedPart()
+    {
+        if (Auth::check()) {
             return Response::allow('Вам разрешено');
         }
         return Response::deny('Вам запрещено');

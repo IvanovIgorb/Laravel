@@ -23,18 +23,17 @@ class BookAccess
         $userId = $request->route('userId');
         $bookId = $request->route('bookId');
 
-        $access = Access::where('user_id',Auth::id())->where('host_id', $userId)->first();
-        $book = Book::where('id',$bookId)->where('author_id', $userId)->first();
-        if (isset($book)){
-            if ($book->access == 1 || $book->author_id == Auth::id() || isset($access)){
+        $access = Access::where('user_id', Auth::id())->where('host_id', $userId)->first();
+        $book = Book::where('id', $bookId)->where('author_id', $userId)->first();
+        if (isset($book)) {
+            if ($book->access == 1 || $book->author_id == Auth::id() || isset($access)) {
                 return $next($request);
-            }
-            else {
+            } else {
                 abort(403);
             }
-        }
-        else
+        } else {
             abort(404);
+        }
 
     }
 }

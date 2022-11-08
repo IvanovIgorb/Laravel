@@ -21,12 +21,11 @@ class BookFunctionsAccess
     {
         $userId = Auth::id();
         $bookId = $request->route('bookId');
-        $book = Book::where('id',$bookId)->where('author_id', $userId)->first();
+        $book = Book::where('id', $bookId)->where('author_id', $userId)->first();
         if (isset($book)) {
             return $next($request);
-        }
-        else
+        } else {
             abort(403);
-
+        }
     }
 }

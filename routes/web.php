@@ -22,33 +22,39 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/home/{userId}', [Controllers\CommentController::class, 'index'])->name('profile.index');
+Route::get('/comment/{userId}', [Controllers\CommentController::class, 'index'])->name('profile.index');
 
-Route::post('/home/{userId}', [Controllers\CommentController::class, 'store']);
+Route::post('/comment/{userId}', [Controllers\CommentController::class, 'store']);
 
-Route::delete('/home/{userId}', [Controllers\CommentController::class, 'destroy']);
+Route::delete('/comment/{userId}', [Controllers\CommentController::class, 'destroy']);
 
 Route::get('/fetch-comments/{userId}', [Controllers\CommentController::class, 'getMoreComments'])->name('fetch-comm');
 
-Route::get('home/{userId}/lib', [Controllers\BookController::class, 'index'])->middleware('library.access')->name('profile.library');
+Route::group([
+    'prefix' => '/library',
+], function (){
+    Route::get('{userId}', [Controllers\BookController::class, 'index'])->middleware('library.access')->name('profile.library');
 
-Route::get('home/{userId}/lib/create', [Controllers\BookController::class, 'create'])->name('profile.createBook');
+    Route::get('create/{userId}', [Controllers\BookController::class, 'create'])->name('profile.createBook');
 
-Route::post('home/{userId}/lib/create', [Controllers\BookController::class, 'store'])->name('profile.createBook');
+    Route::post('create/{userId}', [Controllers\BookController::class, 'store'])->name('profile.createBook');
 
-Route::get('home/{userId}/lib/{bookId}', [Controllers\BookController::class, 'show'])->middleware('book.access')->name('profile.readBook');
+    Route::get('{userId}/{bookId}', [Controllers\BookController::class, 'show'])->middleware('book.access')->name('profile.readBook');
 
-Route::get('home/{userId}/lib/edit/{bookId}', [Controllers\BookController::class, 'edit'])->middleware('bookFunctions.access')->name('profile.editBook');
+    Route::get('{userId}/edit/{bookId}', [Controllers\BookController::class, 'edit'])->middleware('bookFunctions.access')->name('profile.editBook');
 
-Route::post('home/{userId}/lib/edit/{bookId}', [Controllers\BookController::class, 'update'])->middleware('bookFunctions.access');
+    Route::post('{userId}/edit/{bookId}', [Controllers\BookController::class, 'update'])->middleware('bookFunctions.access');
 
-Route::delete('home/{userId}/lib', [Controllers\BookController::class, 'destroy']);
+    Route::delete('{userId}', [Controllers\BookController::class, 'destroy']);
 
-Route::put('home/{userId}/lib', [Controllers\BookController::class, 'update']);
+    Route::put('{userId}', [Controllers\BookController::class, 'update']);
 
-Route::post('home/lib/access', [Controllers\AccessController::class, 'store'])->name('create.access');
+    Route::post('access', [Controllers\AccessController::class, 'store'])->name('create.access');
 
-Route::delete('home/lib/access', [Controllers\AccessController::class, 'destroy'])->name('destroy.access');
+    Route::delete('access', [Controllers\AccessController::class, 'destroy'])->name('destroy.access');
+});
+
+
 
 
 
